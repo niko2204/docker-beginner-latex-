@@ -1,0 +1,462 @@
+\documentclass{article}
+\usepackage{kotex}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{authblk}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{subcaption}  % 서브피겨 환경을 위한 패키지
+
+% 페이지 레이아웃 설정
+\geometry{a4paper, margin=1in}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+
+% 링크 색상 설정
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Dockerizing a Node.js Server},
+}
+
+% 목록 스타일 정의
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red!80!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=10pt,
+  backgroundcolor=\color{lightgray!20},
+  frame=single,
+  rulecolor=\color{black!30},
+  breaklines=true,
+  breakatwhitespace=false,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  captionpos=b,
+}
+
+% Dockerfile 언어 정의
+\lstdefinelanguage{dockerfile}{
+  keywords={FROM, RUN, CMD, LABEL, MAINTAINER, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, VOLUME, USER, WORKDIR, ARG, ONBUILD},
+  morecomment=[l]{\#},
+  morestring=[b]",
+  sensitive=true
+}
+
+% JavaScript 언어 정의
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with, let, const},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]'
+}
+
+% Bash 언어 정의
+\lstdefinelanguage{Bash}{
+  keywords={if, then, else, fi, for, while, do, done, case, esac, function, select, until, in, break, continue, return, exit, eval, exec, export, readonly, shift, trap, unset, let, declare, typeset},
+  sensitive=true,
+  alsoletter={-},
+  morecomment=[l]{\#},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]`,
+}
+
+% Custom shell command language definition for Linux commands
+\lstdefinelanguage{Shell}{
+  keywords={cd, ls, mkdir, rm, rmdir, sudo, apt-get, yum, pacman, mv, cp, docker, run, build, stop, start, exec, ps, init, install},
+  keywordstyle=\color{blue}\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  alsoletter={-},
+}
+
+\title{도커를 이용하여 Node.js 서버 만들기}
+\author{이영호}
+\affil{국립목포대학교 컴퓨터공학과\\ \texttt{youngho.lee@gmail.com}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\clearpage
+
+\section{시작하기}
+이번 과정은 우분투에 node.js를 설치하고 간단한 자바 스크립 서버를 만든다. 그리고 dockerfile을 만들어 도커 이미지를 만들어 사용하는 것이다. 실습을 위해서 자신의 컴퓨터의 OS를 사용할 수도 있지만, 가상머신을 사용하기 바란다. 윈도우면 virtual box, 맥OS는 UTM을 다운받아 설치 한 후 우분투를 설치한다. 우분투 설치후 sudo apt-get update를 실행한다. 
+
+반드시 필요한건 아니지만 visual studio code 를 우분투에 설치하여 사용하여도 좋다. 
+
+\section{Node.js 설치}
+먼저 Node.js가 설치되어 있지 않다면 사이트(\url{https://nodejs.org/en/download/package-manager})에서 설치 방법을 확인하고 따라해주세요. 여러가지 방법이 있습니다. 네이버나 다른 검색엔진에서 한글로된 친절할 설명을 찾아 읽어 보아도 좋습니다. 
+
+우분투에서 폴더를 하나 생성하고, \texttt{test.js}라는 이름으로 파일을 하나 생성 후 다음 코드를 작성합니다. 리눅스에서 폴더를 생성하는 명령어는 mkdir입니다. 그리고 파일 작성은 vi 에디터나 비주얼 스튜디오 코드를 이용하세요. 
+
+\begin{lstlisting}[language=JavaScript, caption={test.js 예제}]
+'use strict';
+
+var printFunc = function(name) {
+    console.log(name);
+}
+
+printFunc('vscode & node.js');
+\end{lstlisting}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/test.js.png}
+  \caption{비주얼 스튜디오 코드에서 test.js를 작성하는 스크린 샷}
+  \label{fig:testjs}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/helloworld.png}
+  \caption{test.js를 nodejs 서버로 실행한 결과}
+  \label{fig:testjsresult}
+\end{figure}
+
+
+
+F5를 눌러 실행시켜주면 다음과 같은 화면이 뜨는데 Node.js를 눌러 실행시켜주면 됩니다. 정상 작동이 되면 Node.js 개발환경이 준비되었습니다. 그림\ref{fig:testjs}처럼 비주얼 스튜디오 코드를 이용하여 코드를 작성 한 후 F5를 누릅니다. 그리고 웹브라우저를 실행하여 http://localhost:3000 주소창에 입력하면 그림\ref{fig:testjsresult}처럼 자바스크립으로 작성한 홈페이지를 볼 수 있습니다. 
+
+\newpage
+
+\section{app.js 작성}
+자, 이제 테스르를 마쳤으니 본격적으로 node js 서버를 만들어 봅시다. 
+
+\begin{lstlisting}[language=JavaScript, caption={app.js 예제}]
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => res.send('Hello World'));
+app.get('/home', (req, res) => res.send('My name is Youngho Lee'));
+
+app.listen(3000, () => {
+    console.log('My REST API running on port 3000!');
+});
+\end{lstlisting}
+
+작성 후, 터미널에서 해당 폴더로 이동 후 명령어를 입력합니다. VS Code일 경우 \texttt{Ctrl + \`} 또는 TERMINAL을 누르면 해당 폴더로 이동된 터미널 사용이 가능합니다.
+
+\begin{lstlisting}[language=Shell, caption={npm 초기화 명령어}]
+$ npm init
+\end{lstlisting}
+
+npm init 명령어를 입력하고 나면, 패키지명을 입력하라는 창이 나옵니다. 원하는 패키지 명을 입력하는 엔터키를 누릅니다. 완료되면 패키지 정보를 담고 있는 \texttt{package.json} 파일이 생성됩니다. 이 파일은 폴더에 있습니다. 중요한 파일입니다. 아래 실행 결과과 그림\ref{fig:npminit}을 보면 이해될 겁니다. 
+
+\begin{lstlisting}[language=Shell, caption={npm init 실행 예제}]
+ylee@ylee-VirtualBox:~/mytest$ npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help json` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg>` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+package name: (mytest) my-nodejs-docker-v0.1
+version: (1.0.0) 
+description: 
+entry point: (app.js) 
+test command: 
+git repository: 
+keywords: 
+author: 
+license: (ISC) 
+About to write to /home/ylee/mytest/package.json:
+
+{
+  "name": "my-nodejs-docker-v0.1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
+
+Is this OK? (yes) 
+ylee@ylee-VirtualBox:~/mytest$ 
+
+\end{lstlisting}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/npminit.png}
+  \caption{npm init 실행한 결과}
+  \label{fig:npminit}
+\end{figure}
+
+그 다음, Express를 설치해줍니다. express가 무엇인지는 다음 홈페이지를 참고하세요. (\url{https://expressjs.com/ko/starter/installing.html})완료되면 \texttt{package.json} 파일에 Express가 추가됩니다. 
+
+\begin{lstlisting}[language=Shell, caption={Express 설치}]
+$ npm install --save express
+\end{lstlisting}
+
+
+package.json 파일을 열어 시작 앱을 그림\ref{fig:nodepackage} 처럼 \texttt{app.js}로 지정합니다. 
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/nodeapp.png}
+  \caption{package.json 파일에 start node app.js를 추가합니다. }
+  \label{fig:nodepackage}
+\end{figure}
+
+\begin{lstlisting}[language=Shell, caption={Node.js 서버 시작}]
+npm run start
+\end{lstlisting}
+
+실행 후, 크롬 브라우저로 접속 후, \texttt{localhost:3000}과 \texttt{localhost:3000/home} 으로 들어가면, \texttt{app.js} 화면이 띄워지게 됩니다. 그림/ref{fig:first}와 그림\ref{fig:second}를 보면 우리가 만든 서버가 잘 동작함을 알 수 있습니다. 
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/npmrunstart.png}
+  \caption{terminal 에서 npm run start 를 실행하면 app.js 서버가 실행됩니다.  }
+  \label{fig:npmrunstart}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \begin{subfigure}[t]{0.8\textwidth} % 첫 번째 그림, 폭은 전체 텍스트의 80%
+      \centering
+      \includegraphics[width=\textwidth]{images/localhost.png} % 첫 번째 그림 경로
+      \caption{http://localhost:3000 접속} % 첫 번째 그림 캡션
+      \label{fig:first} % 첫 번째 그림 레이블
+  \end{subfigure}
+  
+  \vspace{0.5cm} % 그림 사이의 간격 조절 (필요에 따라 조절 가능)
+
+  \begin{subfigure}[t]{0.8\textwidth} % 두 번째 그림, 폭은 전체 텍스트의 80%
+      \centering
+      \includegraphics[width=\textwidth]{images/localhome.png} % 두 번째 그림 경로
+      \caption{http://localhost:3000/home 접속} % 두 번째 그림 캡션
+      \label{fig:second} % 두 번째 그림 레이블
+  \end{subfigure}
+
+  \caption{서버에 접속한 화면} % 전체 그림 캡션
+  \label{fig:stacked} % 전체 그림 레이블
+\end{figure}
+
+\clearpage
+
+\section{Dockerfile 생성 및 빌드}
+비주얼 스튜디오 코드의 Extension에서 Docker 검색해서 Docker 플러그인을 설치합니다. 그림 /ref{fig:dockerextension} 을 보면 왼쪽의 탭에서 확장을 선택하여 검색하는 것을 볼 수 있습니다. 
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/dockerextension.png}
+  \caption{비주얼 스튜디오 코드에서 docker extension을 찾아 설치  }
+  \label{fig:dockerextension}
+\end{figure}
+
+이제 같은 폴더에서 비주얼 스튜디오 코드에서 \texttt{Dockerfile}을 생성하고 다음과 같이 작성해 줍니다.
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/dockerfile.png}
+  \caption{dodkerfile과 .dockerextension 파일 }
+  \label{fig:dockerfile}
+\end{figure}
+
+\begin{lstlisting}[language=dockerfile, caption={Dockerfile 예제}]
+FROM node:12-alpine
+WORKDIR /app
+COPY package*.json /app
+RUN npm install
+COPY . /app
+CMD [ "npm", "start" ]
+EXPOSE 3000
+\end{lstlisting}
+
+\begin{itemize}
+    \item Docker Hub에 있는 \texttt{node:12-alpine} 이미지 사용
+    \item 이미지 안에 애플리케이션 코드를 넣기 위한 디렉터리 생성. 애플리케이션의 작업 디렉터리가 됩니다.
+    \item \texttt{node:12} 이미지에 Node.js와 npm은 설치되어 있으므로 npm 바이너리로 앱 의존성만 설치합니다.
+    \item npm 설치 (\texttt{RUN}은 새로운 레이어 위에서 명령어를 실행, 주로 패키지 설치용)
+    \item Docker 이미지 안에 앱의 소스코드를 넣기 위함
+    \item \texttt{CMD}는 도커가 실행될 때 실행되는 명령어를 정의합니다.
+    \item 3000번 포트로 실행
+\end{itemize}
+
+이는 Dockerfile에 위 스텝들을 캐싱해 놓는다고 생각하시면 됩니다. 애플리케이션을 수정하거나 rebuild할 때마다 위 Dockerfile은 위 스텝들을 다시 진행하지 않게 해줍니다.
+
+빌드 전, \texttt{.dockerignore} 파일을 생성하여 Docker image의 파일 시스템의 \texttt{node\_modules} 디렉터리가 현재 로컬 작업 디렉터리의 \texttt{node\_modules} 디렉터리로 덮어지지 않도록 합니다.
+
+\begin{lstlisting}[language=Shell, caption={Docker 이미지 빌드}]
+  $  sudo docker build -t my-nodejs-docker-v0.1 .
+[sudo] password for ylee: 
+[+] Building 1.6s (10/10) FINISHED                                                                    docker:default
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 155B                                                                            0.0s
+ => [internal] load metadata for docker.io/library/node:12-alpine                                               1.5s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 66B                                                                                0.0s
+ => [1/5] FROM docker.io/library/node:12-alpine@sha256:d4b15b3d48f42059a15bd659be60afe21762aae9d6cbea6f1244408  0.0s
+ => [internal] load build context                                                                               0.0s
+ => => transferring context: 147B                                                                               0.0s
+ => CACHED [2/5] WORKDIR /app                                                                                   0.0s
+ => CACHED [3/5] COPY package*.json /app/                                                                       0.0s
+ => CACHED [4/5] RUN npm install                                                                                0.0s
+ => CACHED [5/5] COPY . /app                                                                                    0.0s
+ => exporting to image                                                                                          0.0s
+ => => exporting layers                                                                                         0.0s
+ => => writing image sha256:41a33e535d06a14739f19c83c75f6b93ad7464e193c4700901a448b89f5d3a60                    0.0s
+ => => naming to docker.io/library/my-nodejs-docker-v0.1  
+\end{lstlisting}
+
+그리고 Container Image를 도커로 빌드합니다. 이때 도커가 실행되고 있어야 하니, Docker QuickStart Terminal을 연 상태에서 빌드해주어야 합니다.
+
+\begin{lstlisting}[language=Shell, caption={도커 이미지 조회}]
+  $ sudo docker images
+  REPOSITORY                TAG       IMAGE ID       CREATED          SIZE
+  my-nodejs-docker-v0.1     latest    41a33e535d06   12 minutes ago   95.6MB
+  <none>                    <none>    67536ede950e   16 hours ago     94MB
+  mynewserver               latest    3372a92d9e3f   10 days ago      134MB
+  mynginx                   latest    3ee48dfc2712   10 days ago      249MB
+  nginx                     latest    5ef79149e0ec   3 weeks ago      188MB
+  busybox                   latest    65ad0d468eb1   15 months ago    4.26MB
+  hello-world               latest    d2c94e258dcb   16 months ago    13.3kB
+  prakhar1989/static-site   latest    f01030e1dcf3   8 years ago      134MB
+\end{lstlisting}
+
+방금 빌드한 이미지를 확인합니다.
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/dockerimage.png}
+  \caption{만들어진 도커 이미지 }
+  \label{fig:dockerimage}
+\end{figure}
+
+\section{컨테이너 실행}
+
+다음 명령어로 Docker Container로 빌드된 이미지를 실행시킵니다. -p 5000:3000의 의미는 Host 포트 5000으로 들어오는 트래픽을 Container의 포트 3000으로 포워딩 시키는 것입니다. 
+
+\texttt{app.js}에서 작성한 로그 \texttt{My REST API running on port 3000!} 문구와 함께 \texttt{app.js}가 실행되었다는 화면을 볼 수 있습니다.
+
+\begin{lstlisting}[language=Shell, caption={Docker 컨테이너 실행}]
+  $ sudo docker run -p 5000:3000 my-nodejs-docker-v0.1
+
+  > my-nodejs-docker-v0.1@1.0.0 start /app
+  > node app.js
+  
+  My REST API running on port 3000!
+\end{lstlisting}
+
+지금까지 여러분이 실행한 명령어와 옵션을 극히 일부입니다. 더 많은 옵션과 명령어가 있습니다. 하나하나 찾아보면서 실행해 보시기 바랍니다. 
+참고로 명령어에 `-h' 옵션을 붙이면 모든 명령어에 필요한 정보를 얻을 수 있습니다. 
+
+\begin{lstlisting}[language=Shell, caption={Docker 명령어 도움말}]
+$  docker -h
+Flag shorthand -h has been deprecated, use --help
+
+Usage:  docker [OPTIONS] COMMAND
+
+A self-sufficient runtime for containers
+
+Common Commands:
+  run         Create and run a new container from an image
+  exec        Execute a command in a running container
+  ps          List containers
+  build       Build an image from a Dockerfile
+  pull        Download an image from a registry
+  push        Upload an image to a registry
+  images      List images
+  
+\end{lstlisting}
+
+\clearpage
+\appendix
+\section{Docker 명령어}
+
+\subsection*{도커 기본 명령어}
+\begin{itemize}
+    \item \texttt{docker --version} : 도커 버전을 확인합니다.
+    \item \texttt{docker info} : 도커 시스템에 대한 자세한 정보를 출력합니다.
+    \item \texttt{docker help} : 도커 명령어에 대한 도움말을 표시합니다.
+\end{itemize}
+
+\subsection*{이미지 관련 명령어}
+\begin{itemize}
+    \item \texttt{docker pull [이미지 이름]} : 도커 허브에서 이미지를 다운로드합니다.
+    \item \texttt{docker images} : 다운로드된 모든 이미지를 나열합니다.
+    \item \texttt{docker rmi [이미지 ID]} : 특정 이미지를 삭제합니다.
+    \item \texttt{docker build -t [이미지 이름] .} : 현재 디렉토리의 Dockerfile을 사용해 이미지를 빌드합니다.
+\end{itemize}
+
+\subsection*{컨테이너 관련 명령어}
+\begin{itemize}
+    \item \texttt{docker run [옵션] [이미지 이름]} : 컨테이너를 생성하고 실행합니다.
+    \begin{itemize}
+        \item 예: \texttt{docker run -it --name my\_container ubuntu /bin/bash}
+    \end{itemize}
+    \item \texttt{docker ps} : 현재 실행 중인 모든 컨테이너를 나열합니다.
+    \item \texttt{docker ps -a} : 중지된 컨테이너를 포함한 모든 컨테이너를 나열합니다.
+    \item \texttt{docker stop [컨테이너 ID]} : 실행 중인 컨테이너를 중지합니다.
+    \item \texttt{docker start [컨테이너 ID]} : 중지된 컨테이너를 다시 시작합니다.
+    \item \texttt{docker restart [컨테이너 ID]} : 컨테이너를 재시작합니다.
+    \item \texttt{docker rm [컨테이너 ID]} : 특정 컨테이너를 삭제합니다.
+    \item \texttt{docker exec -it [컨테이너 이름] /bin/bash} : 실행 중인 컨테이너에 접속합니다.
+\end{itemize}
+
+\subsection*{네트워크 관련 명령어}
+\begin{itemize}
+    \item \texttt{docker network ls} : 모든 네트워크를 나열합니다.
+    \item \texttt{docker network create [네트워크 이름]} : 새로운 네트워크를 생성합니다.
+    \item \texttt{docker network connect [네트워크 이름] [컨테이너 이름]} : 컨테이너를 네트워크에 연결합니다.
+    \item \texttt{docker network disconnect [네트워크 이름] [컨테이너 이름]} : 컨테이너를 네트워크에서 분리합니다.
+\end{itemize}
+
+\subsection*{볼륨 관련 명령어}
+\begin{itemize}
+    \item \texttt{docker volume ls} : 모든 볼륨을 나열합니다.
+    \item \texttt{docker volume create [볼륨 이름]} : 새로운 볼륨을 생성합니다.
+    \item \texttt{docker volume rm [볼륨 이름]} : 특정 볼륨을 삭제합니다.
+\end{itemize}
+
+\subsection*{로그 및 상태 확인 명령어}
+\begin{itemize}
+    \item \texttt{docker logs [컨테이너 이름]} : 컨테이너의 로그를 출력합니다.
+    \item \texttt{docker top [컨테이너 이름]} : 컨테이너 내부의 프로세스를 나열합니다.
+    \item \texttt{docker stats} : 모든 실행 중인 컨테이너의 실시간 리소스 사용량을 표시합니다.
+\end{itemize}
+
+\subsection*{도커 컴포즈 관련 명령어}
+\begin{itemize}
+    \item \texttt{docker-compose up} : 정의된 모든 서비스(컨테이너)를 시작합니다.
+    \item \texttt{docker-compose down} : 정의된 모든 서비스를 중지하고 네트워크를 삭제합니다.
+    \item \texttt{docker-compose ps} : 컴포즈로 실행 중인 서비스(컨테이너)를 나열합니다.
+\end{itemize}
+
+\end{document}
+
+%https://ebbnflow.tistory.com/206

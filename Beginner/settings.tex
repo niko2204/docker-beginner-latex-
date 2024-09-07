@@ -1,0 +1,122 @@
+% 기본 패키지 설정
+\usepackage{lipsum} % 임시 텍스트 생성을 위한 패키지
+\usepackage{kotex} % 한글 사용을 위한 패키지
+\usepackage{graphicx} % 그림 삽입을 위한 패키지
+\usepackage{titling} % 제목 스타일 변경을 위한 패키지
+\usepackage{titlesec} % 챕터, 섹션 제목 스타일 변경을 위한 패키지
+\usepackage{hyperref} % 하이퍼링크를 위한 패키지
+\usepackage[dvipsnames]{xcolor} % 색상 사용을 위한 패키지
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{float}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=NavyBlue!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+% Listings settings
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=5pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  rulecolor=\color{black},
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside={\%*}{*)},
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+}
+
+
+% Title page enhancements
+\pretitle{\begin{center}\fontsize{40}{48}\bfseries\color{MidnightBlue}}
+\posttitle{\end{center}}
+\preauthor{\begin{center}\Large\mdseries\color{ForestGreen}}
+\postauthor{\end{center}}
+\predate{\begin{center}\Large\color{OrangeRed}}
+\postdate{\end{center}}
+
+% Part title styling
+\titleformat{\part}
+  {\fontsize{50}{48}\bfseries\color{Maroon}}
+  {\thepart}
+  {20pt}
+  {\filcenter}
+
+% Chapter title styling
+\titleformat{\chapter}[display]
+  {\bfseries\fontsize{40}{48}\selectfont\color{RoyalBlue}}
+  {\filright\fontsize{40}{48}\selectfont\color{RoyalBlue} 제\ \thechapter\ 장}
+  {20pt}
+  {\filcenter}
+
+% Section title styling
+\titleformat{\section}
+  {\LARGE\bfseries\color{Sepia}}
+  {\thesection}
+  {1em}
+  {}
+
+% Subsection title styling
+\titleformat{\subsection}
+  {\Large\bfseries\color{OliveGreen}}
+  {\thesubsection}
+  {1em}
+  {}
+
+% Subsubsection title styling
+\titleformat{\subsubsection}
+  {\Large\bfseries\color{NavyBlue}}
+  {\thesubsubsection}
+  {1em}
+  {}
+
+% Affiliation command
+\makeatletter
+\newcommand{\affiliation}[3]{%
+  \gdef\@affiliation{#1}%
+  \gdef\@name{#2}%
+  \gdef\@contact{#3}}
+\newcommand{\printaffiliation}{%
+  \vfill
+  \begin{center}
+    \LARGE
+    \textcolor{ForestGreen}{\@name} \\
+    \href{mailto:\@contact}{\textcolor{MidnightBlue}{\@contact}} \\
+    \textcolor{MidnightBlue}{\@affiliation}
+  \end{center}}
+\makeatother
+
+% Define a new tcolorbox style called KnowledgeBox
+\newtcolorbox[auto counter, number within=section]{KnowledgeBox}[2][]{
+  colframe=teal!60!black, 
+  colback=teal!10, 
+%  title=지식상자 \thetcbcounter: #2, 
+  title=지식상자: #2,
+  fonttitle=\bfseries, 
+  coltitle=white, 
+  rounded corners, 
+  enhanced, 
+  boxrule=0.8mm, 
+  float, % Enable floating behavior
+  floatplacement=b, % Float box placement at the bottom of the page
+  #1
+}
+
+
+% 페이지 배경색 설정\pagecolor{GreenYellow}

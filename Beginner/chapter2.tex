@@ -1,0 +1,105 @@
+\chapter{시작하기}
+이 문서는 Docker의 특정 측면을 설명하는 여러 섹션으로 구성되어 있습니다. 각 섹션에서는 명령을 입력하거나 코드를 작성할 것입니다. 튜토리얼에서 사용되는 모든 코드는 Github 저장소에 있습니다.
+\begin{quote}
+참고: 이 튜토리얼은 Docker 버전 27.1.1, build 6312585를 사용합니다. 튜토리얼의 일부가 향후 버전과 호환되지 않는 경우, 문제를 제기해 주세요. 감사합니다!
+\end{quote}
+
+\section{사전 요구 사항}
+이 튜토리얼을 위한 특정 기술 요구 사항은 없습니다. 커맨드 라인 사용과 텍스트 편집기 사용에 대한 기본적인 이해만 있으면 됩니다. 이 튜토리얼은 git clone을 사용하여 로컬 저장소를 복제합니다. 시스템에 Git이 설치되어 있지 않으면 설치하거나 Github에서 수동으로 zip 파일을 다운로드해야 합니다. 웹 응용 프로그램 개발에 대한 사전 경험이 도움이 되지만 필수는 아닙니다. 튜토리얼을 진행하면서 몇 가지 클라우드 서비스를 사용할 것입니다. 함께 따라하고 싶다면 다음 웹사이트에 계정을 만들어 주세요:
+\begin{itemize}
+    \item \href{http://aws.amazon.com/}{Amazon Web Services}
+    \item \href{https://virtualbox.org/}{VirtualBox}
+    \item \href{https://docs.getutm.app/installation/macos/}{UTM}
+    \item \href{https://hub.docker.com/}{Docker Hub}
+\end{itemize}
+
+\section{apt 저장소를 이용한 설치}
+
+새 호스트 머신에 처음으로 Docker Engine을 설치하기 전에, Docker 저장소를 설정해야 합니다. 이후에는 저장소에서 Docker를 설치하고 업데이트할 수 있습니다.
+
+컴퓨터에 모든 도구를 설정하는 것은 어려울 수 있지만, 다행히도 Docker가 안정화됨에 따라 Docker를 좋아하는 OS에서 실행하는 것이 매우 쉬워졌습니다.
+
+몇 릴리즈 전까지는 OSX와 Windows에서 Docker를 실행하는 것이 꽤 번거로웠습니다. 그러나 최근 Docker는 이러한 OS의 사용자를 위한 온보딩 경험을 크게 개선하여 이제 Docker를 실행하는 것이 매우 간단합니다. Docker의 시작하기 가이드는 Mac, Linux 및 Windows에서 Docker를 설정하는 자세한 지침을 제공합니다.
+
+각각 설치 방법은 아래 링크를 클릭 하세요. 설치 파일ㅇ르 다운로드 받거나 명령어를 복사하여 터미널에 붙여넣기 하세요.:
+\begin{itemize}
+    \item \href{https://docs.docker.com/docker-for-mac/}{Docker for Mac}
+    \item \href{https://docs.docker.com/engine/install/ubuntu/}{Docker for Ubuntu}
+    \item \href{https://docs.docker.com/desktop/install/windows-install/}{Docker for Windows}
+\end{itemize}
+
+\subsection{Docker의 apt 저장소 설정}
+
+\begin{enumerate}
+\item Docker의 공식 GPG 키 추가:
+\begin{lstlisting}[language=bash]
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+\end{lstlisting}
+
+\item 저장소를 apt 소스에 추가:
+\begin{lstlisting}[language=bash]
+# Add the repository to Apt sources:
+echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+\end{lstlisting}
+\end{enumerate}
+
+\textbf{주의}: Linux Mint와 같은 Ubuntu 파생 배포판을 사용하는 경우, \texttt{VERSION\_CODENAME} 대신 \texttt{UBUNTU\_CODENAME}을 사용해야 할 수 있습니다.
+
+\subsection{Docker 패키지 설치}
+
+\subsubsection{최신 버전 설치}
+최신 버전을 설치하려면, 다음 명령어를 실행하십시오:
+\begin{lstlisting}[language=bash]
+ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+\end{lstlisting}
+
+\subsection{설치 확인}
+
+\texttt{hello-world} 이미지를 실행하여 Docker Engine 설치가 성공적으로 완료되었는지 확인할 수 있습니다:
+\begin{lstlisting}[language=bash]
+ sudo docker run hello-world
+\end{lstlisting}
+이 명령어는 테스트 이미지를 다운로드하여 컨테이너에서 실행합니다. 컨테이너가 실행되면 확인 메시지를 출력하고 종료됩니다.
+
+이제 Docker Engine을 성공적으로 설치하고 시작하였습니다.
+
+\begin{lstlisting}[language=bash]
+$ docker run hello-world
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (arm64v8)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash]
+$ docker -v
+Docker version 27.1.2, build 6312585
+\end{lstlisting}
+
