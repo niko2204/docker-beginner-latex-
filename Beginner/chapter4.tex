@@ -22,7 +22,7 @@
 \end{figure*}
 
 이 이미지는 Nginx 웹 서버를 실행하며, 이 서버는 컨테이너가 시작될 때 자동으로 시작됩니다. 이 이미지는 prakhar1989/static-site라는 이름으로 Docker Hub에 호스팅되었습니다. 이 이미지를 가져오고 실행하려면 다음 명령을 실행하세요.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
   $ sudo docker pull prakhar1989/static-site
   Using default tag: latest
   latest: Pulling from prakhar1989/static-site
@@ -43,7 +43,7 @@
 이미지가 로컬에 없으면 클라이언트가 먼저 레지스트리에서 이미지를 가져온 다음 이미지를 실행합니다. 모든 것이 잘 되면 터미널에 Nginx is running... 메시지가 표시됩니다. 이제 서버가 실행 중인데, 웹사이트를 어떻게 볼까요? 어떤 포트에서 실행되고 있나요? 더 중요한 것은 호스트 머신에서 컨테이너에 어떻게 액세스할까요? Ctrl+C를 눌러 컨테이너를 중지합니다.
 
 이 경우 클라이언트가 포트를 노출하지 않으므로 포트를 게시하도록 docker run 명령을 다시 실행해야 합니다. 동시에 터미널이 실행 중인 컨테이너에 연결되지 않도록 해야 합니다. 이렇게 하면 터미널을 닫아도 컨테이너는 계속 실행됩니다. 이를 분리 모드라고 합니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker run -d -P --name static-site prakhar1989/static-site
 e61d12292d69556eabe2a44c16cbd54486b2527e2ce4f95438e504afb7b02810
 \end{lstlisting}
@@ -73,7 +73,7 @@ Nginx is running...
 
 
 분리된 컨테이너를 중지하려면 컨테이너 ID를 사용하여 docker stop 명령을 실행하세요. 이 경우 static-site라는 이름을 사용하여 컨테이너를 시작했습니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker stop static-site
 static-site
 \end{lstlisting}
@@ -84,7 +84,7 @@ static-site
 이미지를 이미 살펴보았지만, 이 섹션에서는 Docker 이미지가 무엇인지 더 자세히 살펴보고 직접 이미지를 만들어 보겠습니다! 마지막으로, 이 이미지를 사용하여 로컬에서 응용 프로그램을 실행하고 최종적으로 AWS에 배포하여 친구들과 공유할 것입니다! 흥미롭지 않나요? 그럼 시작해 봅시다.
 
 Docker 이미지는 컨테이너의 기본입니다. 이전 예제에서는 Busybox 이미지를 레지스트리에서 가져와 Docker 클라이언트에 해당 이미지 기반의 컨테이너를 실행하도록 요청했습니다. 로컬에서 사용할 수 있는 이미지 목록을 보려면 docker images 명령을 사용하세요.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker images
 REPOSITORY                      TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
 prakhar1989/catnip              latest              c7ffb5626a50        2 hours ago         697.9 MB
@@ -99,7 +99,7 @@ hello-world                     latest              0a6ba66e537a        11 weeks
 위에는 레지스트리에서 가져온 이미지 목록과 직접 생성한 이미지 목록이 표시됩니다(곧 볼 수 있습니다). TAG는 이미지의 특정 스냅샷을 나타내며 IMAGE ID는 해당 이미지의 고유 식별자입니다.
 
 간단히 말해, 이미지를 git 저장소와 유사하게 생각할 수 있습니다 - 이미지는 변경 사항을 커밋할 수 있으며 여러 버전을 가질 수 있습니다. 특정 버전 번호를 제공하지 않으면 클라이언트는 기본적으로 latest로 설정됩니다. 예를 들어, ubuntu 이미지의 특정 버전을 가져올 수 있습니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker pull ubuntu:18.04
 \end{lstlisting}
 
@@ -183,7 +183,7 @@ CMD ["python", "./app.py"]
 이제 Dockerfile이 준비되었으므로 이미지를 빌드할 수 있습니다. docker build 명령은 Dockerfile에서 Docker 이미지를 생성하는 작업을 수행합니다.
 
 아래 섹션에서는 동일한 명령을 실행한 출력을 보여줍니다. 명령을 직접 실행하기 전에(점을 잊지 마세요) 제 사용자 이름을 여러분의 사용자 이름으로 바꾸세요. 이 사용자 이름은 Docker Hub에 등록할 때 생성한 사용자 이름과 동일해야 합니다. 아직 계정을 생성하지 않았다면, 지금 바로 생성해 주세요. docker build 명령은 매우 간단합니다 - 선택적으로 -t와 위치를 사용하여 태그 이름과 Dockerfile이 포함된 디렉토리를 지정할 수 있습니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker build -t yourusername/catnip .
 Sending build context to Docker daemon 8.704 kB
 Step 1 : FROM python:3.8
@@ -230,7 +230,7 @@ $ docker run -p 8888:5000 yourusername/catnip
 AWS에 앱을 배포하기 전에 해야 할 첫 번째 일은 AWS에서 접근할 수 있는 레지스트리에 이미지를 게시하는 것입니다. 사용할 수 있는 Docker 레지스트리에는 여러 가지가 있습니다(자신만의 레지스트리를 호스팅할 수도 있습니다). 지금은 Docker Hub를 사용하여 이미지를 게시하겠습니다.
 
 이미지를 처음으로 푸시하는 경우 클라이언트가 로그인하라는 메시지를 표시할 것입니다. Docker Hub에 로그인할 때 사용한 것과 동일한 자격 증명을 제공하세요.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker login
 Login in with your Docker ID to push and pull images from Docker Hub. If you do not have a Docker ID, head over to https://hub.docker.com to create one.
 Username: yourusername
@@ -242,7 +242,7 @@ Login Succeeded
 \end{lstlisting}
 
 게시하려면 위 이미지 태그의 이름을 여러분의 이름으로 바꾸는 것을 기억하면서 아래 명령을 입력하세요. 클라이언트가 어디에 게시할지 알 수 있도록 $yourusername/image_name$ 형식을 유지하는 것이 중요합니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker push yourusername/catnip
 \end{lstlisting}
 
@@ -251,7 +251,7 @@ $ docker push yourusername/catnip
 참고: 앞으로 나아가기 전에 명확히 하고 싶은 것은, AWS에 배포하기 위해 이미지를 공개 레지스트리(또는 어떤 레지스트리)에 호스팅하는 것이 필수적이지 않다는 것입니다. 다음 백만 달러 스타트업을 위한 코드를 작성하는 경우 이 단계를 건너뛸 수 있습니다. 이미지를 공개적으로 푸시하는 이유는 중간 구성 단계를 건너뛰어 배포를 매우 간단하게 만들기 때문입니다.
 \end{quote}
 이제 여러분의 이미지가 온라인에 있으므로 Docker가 설치된 누구나 단일 명령으로 여러분의 앱을 사용할 수 있습니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker run -p 8888:5000 yourusername/catnip
 \end{lstlisting}
 

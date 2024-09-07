@@ -29,7 +29,7 @@
 
 \end{tikzpicture}
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Shell]
 $ sudo docker images 
 REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
 mynginx                   latest    3ee48dfc2712   14 hours ago    249MB
@@ -43,7 +43,7 @@ ec12360056844129f863e79a30869887eee0c4ee87a9e3ea69b2a9aa309af5b0
 \end{lstlisting}
 
 이제 이 웹사이트를 수정하려면 컨테이너 안으로 들어가야 한다. 컨테이너에 접속하여 작업을 하기 위해서는 다음과 같은 명령어가 필요하다. 이제 컨테이너 안에서 작업할 수 있다. 작업을 위해 /usr/share/nginx/html/ 이동하고, ls 명령어를 이용하여 파일을 확인한다. 이제 index.html을 수정하여 나만의 홈페이지를 만든다. 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 # docker exec -it [container name] /bin/bash
 $ sudo docker exec -it myserver /bin/bash
 root@ec1236005684:/# 
@@ -62,7 +62,7 @@ index.html 파일을 수정하기 위해서 vi 에이터를 사용해 본다. �
 
 이제 여러분은 도커 이미지를 받아 새로운 서버를 만들 수 있게 되었다. 하지만 컨테이너는 읽기만 가능하고 쓰기는 불가능하다. 즉, 실행종료 후에 다시 실행하면 여러분의 작업 내용은 삭제된다. 따라서 새로운 도커 이미지, 즉 여러분 만의 도커 이미지를 만들 수 있어야 한다. 
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 root@ec1236005684:/usr/share/nginx/html# exit
     exit
 $ sudo docker stop myserver 

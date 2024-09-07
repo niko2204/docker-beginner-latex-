@@ -3,7 +3,7 @@
 이제 모든 설정이 완료되었으므로 실제로 손을 더럽힐 차례입니다. 이 섹션에서는 시스템에서 Busybox 컨테이너를 실행하고 docker run 명령을 맛볼 것입니다.
 
 시작하려면 터미널에서 다음 명령을 실행하세요:
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ sudo docker pull busybox
     Using default tag: latest
     latest: Pulling from library/busybox
@@ -19,7 +19,7 @@ $ sudo docker pull busybox
 \end{quote}
 
 pull 명령은 Docker 레지스트리에서 busybox 이미지를 가져와 시스템에 저장합니다. docker images 명령을 사용하여 시스템의 모든 이미지 목록을 볼 수 있습니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ sudo docker images
   REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
   busybox       latest    3fba0c87fcc8   14 months ago   4.04MB
@@ -29,25 +29,25 @@ $ sudo docker images
 
 \section{Docker 실행}
 좋습니다! 이제 이 이미지를 기반으로 Docker 컨테이너를 실행해 봅시다. 이를 위해 강력한 docker run 명령을 사용할 것입니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker run busybox
 $
 \end{lstlisting}
 
 잠깐, 아무 일도 일어나지 않았습니다! 버그인가요? 아니요, 실제로는 많은 일이 발생했습니다. run을 호출하면 Docker 클라이언트가 이미지(busybox)를 찾아 컨테이너를 로드한 다음 해당 컨테이너에서 명령을 실행합니다. docker run busybox를 실행했을 때 명령을 제공하지 않았기 때문에 컨테이너가 부팅되고 빈 명령을 실행한 다음 종료되었습니다. 조금 실망스럽죠? 더 흥미로운 것을 시도해 봅시다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker run busybox echo "hello from busybox"
 hello from busybox
 \end{lstlisting}
 
 좋습니다 - 마침내 출력을 보았습니다. 이 경우 Docker 클라이언트는 busybox 컨테이너에서 echo 명령을 실행한 다음 종료했습니다. 모든 작업이 매우 빠르게 진행되었습니다. 가상 머신을 부팅하고 명령을 실행한 다음 종료한다고 상상해 보세요. 이제 왜 컨테이너가 빠르다고 하는지 알겠죠? 이제 docker ps 명령을 살펴보겠습니다. docker ps 명령은 현재 실행 중인 모든 컨테이너를 보여줍니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 \end{lstlisting}
 
 실행 중인 컨테이너가 없기 때문에 빈 줄이 표시됩니다. 더 유용한 변형을 시도해 봅시다: docker ps -a
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
 305297d7a235        busybox             "uptime"            11 minutes ago      Exited (0) 11 minutes ago   distracted_goldstine
@@ -58,7 +58,7 @@ ff0a5c3750b9        busybox             "sh"                12 minutes ago      
 위에서 보이는 것은 실행했던 모든 컨테이너 목록입니다. STATUS 열이 이 컨테이너들이 몇 분 전에 종료되었음을 보여줍니다.
 
 컨테이너에서 하나 이상의 명령을 실행할 수 있는 방법이 있는지 궁금할 것입니다. 지금 시도해 봅시다:
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker run -it busybox sh
 / # ls
 bin   dev   etc   home  proc  root  sys   tmp   usr   var
@@ -72,21 +72,21 @@ run 명령에 -it 플래그를 사용하면 컨테이너의 대화형 터미널�
 \end{quote}
 
 이로써 자주 사용할 docker run 명령의 간략한 설명이 끝났습니다. 익숙해지는 데 시간을 할애하는 것이 좋습니다. run에 대해 자세히 알아보려면 docker run --help를 사용하여 지원하는 모든 플래그 목록을 확인하세요. 앞으로 나아가기 전에 컨테이너 삭제에 대해 간략히 이야기해 봅시다. 위에서 본 것처럼 docker ps -a를 실행하여 종료 후에도 여전히 컨테이너의 잔여물을 볼 수 있습니다. 이 튜토리얼을 진행하는 동안 여러 번 docker run을 실행할 것이며, 유휴 컨테이너를 남겨두면 디스크 공간을 차지하게 됩니다. 따라서 사용이 끝난 컨테이너는 정리하는 것이 좋습니다. 이를 위해 docker rm 명령을 실행할 수 있습니다. 위의 컨테이너 ID를 복사하여 명령 옆에 붙여넣기만 하면 됩니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker rm 305297d7a235 ff0a5c3750b9
 305297d7a235
 ff0a5c3750b9
 \end{lstlisting}
 
 삭제 시 ID가 다시 표시되어야 합니다. 한 번에 여러 컨테이너를 삭제해야 하는 경우 ID를 복사하여 붙여넣는 것이 번거로울 수 있습니다. 이 경우 다음 명령을 실행할 수 있습니다:
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker rm $(docker ps -a -q -f status=exited)
 \end{lstlisting}
 
 이 명령은 상태가 exited인 모든 컨테이너를 삭제합니다. -q 플래그는 숫자 ID만 반환하고 -f는 제공된 조건에 따라 출력을 필터링합니다. 마지막으로 유용할 수 있는 것은 docker run에 전달할 수 있는 --rm 플래그로, 컨테이너가 종료된 후 자동으로 삭제합니다. 단일 docker 실행의 경우 --rm 플래그가 매우 유용합니다.
 
 Docker의 최신 버전에서는 docker container prune 명령을 사용하여 동일한 효과를 얻을 수 있습니다.
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=Shell]
 $ docker container prune
 WARNING! This will remove all stopped containers.
 Are you sure you want to continue? [y/N] y

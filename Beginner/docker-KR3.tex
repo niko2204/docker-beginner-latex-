@@ -63,6 +63,18 @@
     {:}{{{\color{punct}{:}}}}{1},
 }
 
+% Custom shell command language definition for Linux commands
+\lstdefinelanguage{Shell}{
+  keywords={cd, ls, mkdir, rm, rmdir, sudo, apt-get, yum, pacman, mv, cp, docker, run, build, stop, start, exec, ps, init, install, update, chmod, curl, tee, echo, uname, uptime, sh, dpkg, docker-ce, docker-ce-cli, containerd.io, docker-buildx-plugin, docker-compose-plugin},
+  keywordstyle=\color{blue}\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  alsoletter={-},
+}
+
 \affiliation{국립목포대학교 컴퓨터공학과}{이영호}{youngho.lee@gmail.com}
 
 \title{초보자를 위한 \\도커(Docker) 실습}
