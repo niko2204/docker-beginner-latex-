@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#xb3c4;&#xcee4;&#xb97c; &#xc774;&#xc6a9;&#xd558;&#xc5ec; Node&period;js &#xc11c;&#xbc84; &#xb9cc;&#xb4e4;&#xae30;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension marp-team.marp-vscode */
+#__marp-vscode {
+  all: revert;
+}
+
+/* Override VS Code default CSS rules reverting to initial
+   https://github.com/microsoft/vscode/blob/master/src/vs/workbench/contrib/webview/browser/pre/main.js#L53 */
+body.marp-vscode {
+  padding: 0;
+}
+
+body.marp-vscode img {
+  max-width: unset;
+  max-height: unset;
+}
+
+body.marp-vscode a,
+body.marp-vscode a:hover,
+body.marp-vscode code {
+  color: unset;
+}
+
+body.marp-vscode blockquote {
+  background: unset;
+  border-color: unset;
+}
+
+@media screen {
+  body.marp-vscode {
+    overflow-y: scroll;
+  }
+
+  #__marp-vscode [data-marp-vscode-slide-wrapper] {
+    margin: 20px;
+  }
+
+  #__marp-vscode svg[data-marpit-svg] {
+    box-shadow: 0 5px 10px rgb(0 0 0 / 25%);
+    display: block;
+    margin: 0;
+  }
+
+  /* Based on https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+  #code-csp-warning {
+    background-color: #444;
+    box-shadow: 1px 1px 1px rgb(0 0 0 / 25%);
+    color: white;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 22px;
+    margin: 16px;
+    padding: 6px;
+    position: fixed;
+    right: 0;
+    text-align: center;
+    top: 0;
+    word-wrap: break-word;
+  }
+
+  #code-csp-warning:hover {
+    text-decoration: none;
+    background-color: #007acc;
+    box-shadow: 2px 2px 2px rgb(0 0 0 / 25%);
+  }
+}
+
+@media print {
+  body.marp-vscode #code-csp-warning {
+    display: none;
+  }
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="도커를-이용하여-nodejs-서버-만들기">도커를 이용하여 Node.js 서버 만들기</h1>
+<p>이영호
+국립목대학교컴퓨터공학과</p>
+<h2 id="시작하기">시작하기</h2>
+<ul>
+<li>
+<p>이번 과정은 우분투에 node.js를 설치하고 간단한 자바 스크립 서버를 만든다. 그리고 dockerfile을 만들어 도커 이미지를 만들어 사용하는 것이다. 실습을 위해서 자신의 컴퓨터의 OS를 사용할 수도 있지만, 가상머신을 사용하기 바란다. 윈도우면 virtual box, 맥OS는 UTM을 다운받아 설치 한 후 우분투를 설치한다. 우분투 설치후 sudo apt-get update를 실행한다.</p>
+</li>
+<li>
+<p>반드시 필요한건 아니지만 visual studio code 를 우분투에 설치하여 사용하여도 좋다.</p>
+</li>
+</ul>
+<h2 id="nodejs-설치">Node.js 설치</h2>
+<ul>
+<li>
+<p>먼저 Node.js가 설치되어 있지 않다면 사이트(<a href="https://nodejs.org/en/download/package-manager">click</a>)에서 설치 방법을 확인하고 따라해주세요. 여러가지 방법이 있습니다. 네이버나 다른 검색엔진에서 한글로된 친절할 설명을 찾아 읽어 보아도 좋습니다.</p>
+</li>
+<li>
+<p>우분투에서 폴더를 하나 생성하고, <em>test.js</em> 라는 이름으로 파일을 하나 생성 후 다음 코드를 작성합니다. 리눅스에서 폴더를 생성하는 명령어는 mkdir입니다. 그리고 파일 작성은 vi 에디터나 비주얼 스튜디오 코드를 이용하세요.</p>
+</li>
+</ul>
+<pre><code class="language-javascript"><span class="hljs-meta">&#x27;use strict&#x27;</span>;
+
+<span class="hljs-keyword">var</span> printFunc = <span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(name);
+}
+
+<span class="hljs-title function_">printFunc</span>(<span class="hljs-string">&#x27;vscode &amp; node.js&#x27;</span>);
+</code></pre>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/test.js.png" alt="비주얼 스튜디오 코드에서 test.js를 작성하는 스크린 샷"></p>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/helloworld.png" alt="test.js를 nodejs 서버로 실행한 결과"></p>
+<ul>
+<li>F5를 눌러 실행시켜주면 다음과 같은 화면이 뜨는데 Node.js를 눌러 실행시켜주면 됩니다. 정상 작동이 되면 Node.js 개발환경이 준비되었습니다. 그림\ref{fig:testjs}처럼 비주얼 스튜디오 코드를 이용하여 코드를 작성 한 후 F5를 누릅니다. 그리고 웹브라우저를 실행하여 <a href="http://localhost:3000">http://localhost:3000</a> 주소창에 입력하면 그림\ref{fig:testjsresult}처럼 자바스크립으로 작성한 홈페이지를 볼 수 있습니다.</li>
+</ul>
+<hr>
+<h2 id="appjs-작성">app.js 작성</h2>
+<ul>
+<li>자, 이제 테스르를 마쳤으니 본격적으로 node js 서버를 만들어 봅시다.</li>
+</ul>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;express&#x27;</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();
+
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&#x27;Hello World&#x27;</span>));
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/home&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&#x27;My name is Youngho Lee&#x27;</span>));
+
+app.<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;My REST API running on port 3000!&#x27;</span>);
+});
+</code></pre>
+<ul>
+<li>작성 후, 터미널에서 해당 폴더로 이동 후 명령어를 입력합니다. VS Code일 경우 ** Ctrl + \ ** 또는 TERMINAL을 누르면 해당 폴더로 이동된 터미널 사용이 가능합니다.</li>
+</ul>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">npm init</span>
+</code></pre>
+<ul>
+<li>npm init 명령어를 입력하고 나면, 패키지명을 입력하라는 창이 나옵니다. 원하는 패키지 명을 입력하는 엔터키를 누릅니다. 완료되면 패키지 정보를 담고 있는 <strong>package.json</strong> 파일이 생성됩니다. 이 파일은 폴더에 있습니다. 중요한 파일입니다. 아래 실행 결과 그림을 보면 이해될 겁니다.</li>
+</ul>
+<pre><code class="language-shell">ylee@ylee-VirtualBox:~/mytest$ npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help json` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install &lt;pkg&gt;` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+package name: (mytest) my-nodejs-docker-v0.1
+version: (1.0.0) 
+description: 
+entry point: (app.js) 
+test command: 
+git repository: 
+keywords: 
+author: 
+license: (ISC) 
+About to write to /home/ylee/mytest/package.json:
+
+{
+  &quot;name&quot;: &quot;my-nodejs-docker-v0.1&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;app.js&quot;,
+  &quot;dependencies&quot;: {
+    &quot;express&quot;: &quot;^4.19.2&quot;
+  },
+  &quot;devDependencies&quot;: {},
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  },
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+}
+
+Is this OK? (yes) 
+ylee@ylee-VirtualBox:~/mytest$ 
+</code></pre>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/npminit.png" alt="npm init 실행한 결과"></p>
+<ul>
+<li>그 다음, Express를 설치해줍니다. express가 무엇인지는 다음 홈페이지를 참고하세요. (<a href="https://expressjs.com/ko/starter/installing.html">https://expressjs.com/ko/starter/installing.html</a>)완료되면 <strong>package.json</strong> 파일에 Express가 추가됩니다.</li>
+</ul>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">npm install --save express</span>
+</code></pre>
+<ul>
+<li>package.json 파일을 열어 시작 앱을 그림처럼 <strong>app.js</strong>로 지정합니다.</li>
+</ul>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/nodeapp.png" alt="package.json 파일에 start node app.js를 추가"></p>
+<pre><code class="language-shell">npm run start
+</code></pre>
+<ul>
+<li>실행 후, 크롬 브라우저로 접속 후, <strong>localhost:3000</strong>과 <strong>localhost:3000/home</strong> 으로 들어가면, <strong>app.js</strong> 화면이 띄워지게 됩니다. 아래 그림을 보면 우리가 만든 서버가 잘 동작함을 알 수 있습니다.</li>
+</ul>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/npmrunstart.png" alt="terminal 에서 npm run start 를 실행하면 app.js 서버가 실행"></p>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/localhost.png" alt="http://localhost:3000 접속"></p>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/localhome.png" alt="http://localhost:3000/home 접속"></p>
+<h2 id="dockerfile-생성-및-빌드">Dockerfile 생성 및 빌드</h2>
+<ul>
+<li>비주얼 스튜디오 코드의 Extension에서 Docker 검색해서 Docker 플러그인을 설치합니다. 아래 그림을 보면 왼쪽의 탭에서 확장을 선택하여 검색하는 것을 볼 수 있습니다.</li>
+</ul>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/dockerextension.png" alt="비주얼 스튜디오 코드에서 docker extension을 찾아 설치"></p>
+<ul>
+<li>이제 같은 폴더에서 비주얼 스튜디오 코드에서 <strong>Dockerfile</strong>을 생성하고 다음과 같이 작성해 줍니다.</li>
+</ul>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/dockerfile.png" alt="dockerfile과 .dockerextension 파일"></p>
+<pre><code class="language-dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">12</span>-alpine
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> package*.json /app</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> npm install</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> . /app</span>
+<span class="hljs-keyword">CMD</span><span class="language-bash"> [ <span class="hljs-string">&quot;npm&quot;</span>, <span class="hljs-string">&quot;start&quot;</span> ]</span>
+<span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">3000</span>
+</code></pre>
+<ol>
+<li>Docker Hub에 있는 \texttt{node:12-alpine} 이미지 사용</li>
+<li>이미지 안에 애플리케이션 코드를 넣기 위한 디렉터리 생성. 애플리케이션의 작업 디렉터리가 됩니다.</li>
+<li><strong>node:12</strong> 이미지에 Node.js와 npm은 설치되어 있으므로 npm 바이너리로 앱 의존성만 설치합니다.</li>
+<li>npm 설치 (\texttt{RUN}은 새로운 레이어 위에서 명령어를 실행, 주로 패키지 설치용)</li>
+<li>Docker 이미지 안에 앱의 소스코드를 넣기 위함</li>
+<li><strong>CMD</strong> 는 도커가 실행될 때 실행되는 명령어를 정의합니다.</li>
+<li>3000번 포트로 실행</li>
+</ol>
+<ul>
+<li>
+<p>이는 Dockerfile에 위 스텝들을 캐싱해 놓는다고 생각하시면 됩니다. 애플리케이션을 수정하거나 rebuild할 때마다 위 Dockerfile은 위 스텝들을 다시 진행하지 않게 해줍니다.</p>
+</li>
+<li>
+<p>빌드 전, <strong>.dockerignore</strong> 파일을 생성하여 Docker image의 파일 시스템의 <strong>node_modules</strong> 디렉터리가 현재 로컬 작업 디렉터리의 <strong>node_modules</strong> 디렉터리로 덮어지지 않도록 합니다.</p>
+</li>
+</ul>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">  $ </span><span class="language-bash"> sudo docker build -t my-nodejs-docker-v0.1 .</span>
+[sudo] password for ylee: 
+[+] Building 1.6s (10/10) FINISHED                                                                    docker:default
+ =&gt; [internal] load build definition from Dockerfile                                                            0.0s
+ =&gt; =&gt; transferring dockerfile: 155B                                                                            0.0s
+ =&gt; [internal] load metadata for docker.io/library/node:12-alpine                                               1.5s
+ =&gt; [internal] load .dockerignore                                                                               0.0s
+ =&gt; =&gt; transferring context: 66B                                                                                0.0s
+ =&gt; [1/5] FROM docker.io/library/node:12-alpine@sha256:d4b15b3d48f42059a15bd659be60afe21762aae9d6cbea6f1244408  0.0s
+ =&gt; [internal] load build context                                                                               0.0s
+ =&gt; =&gt; transferring context: 147B                                                                               0.0s
+ =&gt; CACHED [2/5] WORKDIR /app                                                                                   0.0s
+ =&gt; CACHED [3/5] COPY package*.json /app/                                                                       0.0s
+ =&gt; CACHED [4/5] RUN npm install                                                                                0.0s
+ =&gt; CACHED [5/5] COPY . /app                                                                                    0.0s
+ =&gt; exporting to image                                                                                          0.0s
+ =&gt; =&gt; exporting layers                                                                                         0.0s
+ =&gt; =&gt; writing image sha256:41a33e535d06a14739f19c83c75f6b93ad7464e193c4700901a448b89f5d3a60                    0.0s
+ =&gt; =&gt; naming to docker.io/library/my-nodejs-docker-v0.1  
+</code></pre>
+<ul>
+<li>그리고 Container Image를 도커로 빌드합니다. 이때 도커가 실행되고 있어야 하니, Docker QuickStart Terminal을 연 상태에서 빌드해주어야 합니다.</li>
+</ul>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">  $ </span><span class="language-bash">sudo docker images</span>
+  REPOSITORY                TAG       IMAGE ID       CREATED          SIZE
+  my-nodejs-docker-v0.1     latest    41a33e535d06   12 minutes ago   95.6MB
+  &lt;none&gt;                    &lt;none&gt;    67536ede950e   16 hours ago     94MB
+  mynewserver               latest    3372a92d9e3f   10 days ago      134MB
+  mynginx                   latest    3ee48dfc2712   10 days ago      249MB
+  nginx                     latest    5ef79149e0ec   3 weeks ago      188MB
+  busybox                   latest    65ad0d468eb1   15 months ago    4.26MB
+  hello-world               latest    d2c94e258dcb   16 months ago    13.3kB
+  prakhar1989/static-site   latest    f01030e1dcf3   8 years ago      134MB
+</code></pre>
+<ul>
+<li>방금 빌드한 이미지를 확인합니다.</li>
+</ul>
+<p><img src="file:////Users/youngholee/Library/CloudStorage/OneDrive-개인/05_강의자료/myLectureNote(md)/05_클라우드컴퓨팅(md)/Docker-VisualStudioCode/images/dockerimage.png" alt="만들어진 도커 이미지"></p>
+<h2 id="컨테이너-실행">컨테이너 실행</h2>
+<ul>
+<li>
+<p>다음 명령어로 Docker Container로 빌드된 이미지를 실행시킵니다. -p 5000:3000의 의미는 Host 포트 5000으로 들어오는 트래픽을 Container의 포트 3000으로 포워딩 시키는 것입니다.</p>
+</li>
+<li>
+<p><strong>app.js</strong>에서 작성한 로그 \texttt{My REST API running on port 3000!} 문구와 함께 \texttt{app.js}가 실행되었다는 화면을 볼 수 있습니다.</p>
+</li>
+</ul>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">  $ </span><span class="language-bash">sudo docker run -p 5000:3000 my-nodejs-docker-v0.1</span>
+<span class="hljs-meta prompt_">
+  &gt; </span><span class="language-bash">my-nodejs-docker-v0.1@1.0.0 start /app</span>
+<span class="hljs-meta prompt_">  &gt; </span><span class="language-bash">node app.js</span>
+  
+  My REST API running on port 3000!
+</code></pre>
+<ul>
+<li>지금까지 여러분이 실행한 명령어와 옵션을 극히 일부입니다. 더 많은 옵션과 명령어가 있습니다. 하나하나 찾아보면서 실행해 보시기 바랍니다.
+참고로 명령어에 `-h' 옵션을 붙이면 모든 명령어에 필요한 정보를 얻을 수 있습니다.</li>
+</ul>
+<pre><code class="language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"> docker -h</span>
+Flag shorthand -h has been deprecated, use --help
+
+Usage:  docker [OPTIONS] COMMAND
+
+A self-sufficient runtime for containers
+
+Common Commands:
+  run         Create and run a new container from an image
+  exec        Execute a command in a running container
+  ps          List containers
+  build       Build an image from a Dockerfile
+  pull        Download an image from a registry
+  push        Upload an image to a registry
+  images      List images
+  
+</code></pre>
+<hr>
+<h1 id="docker-명령어">Docker 명령어</h1>
+<h2 id="도커-기본-명령어">도커 기본 명령어</h2>
+<ul>
+<li><code>docker --version</code> : 도커 버전을 확인합니다.</li>
+<li><code>docker info</code> : 도커 시스템에 대한 자세한 정보를 출력합니다.</li>
+<li><code>docker help</code> : 도커 명령어에 대한 도움말을 표시합니다.</li>
+</ul>
+<h2 id="이미지-관련-명령어">이미지 관련 명령어</h2>
+<ul>
+<li><code>docker pull [이미지 이름]</code> : 도커 허브에서 이미지를 다운로드합니다.</li>
+<li><code>docker images</code> : 다운로드된 모든 이미지를 나열합니다.</li>
+<li><code>docker rmi [이미지 ID]</code> : 특정 이미지를 삭제합니다.</li>
+<li><code>docker build -t [이미지 이름] .</code> : 현재 디렉토리의 Dockerfile을 사용해 이미지를 빌드합니다.</li>
+</ul>
+<h2 id="컨테이너-관련-명령어">컨테이너 관련 명령어</h2>
+<ul>
+<li><code>docker run [옵션] [이미지 이름]</code> : 컨테이너를 생성하고 실행합니다.
+<ul>
+<li>예: <code>docker run -it --name my_container ubuntu /bin/bash</code></li>
+</ul>
+</li>
+<li><code>docker ps</code> : 현재 실행 중인 모든 컨테이너를 나열합니다.</li>
+<li><code>docker ps -a</code> : 중지된 컨테이너를 포함한 모든 컨테이너를 나열합니다.</li>
+<li><code>docker stop [컨테이너 ID]</code> : 실행 중인 컨테이너를 중지합니다.</li>
+<li><code>docker start [컨테이너 ID]</code> : 중지된 컨테이너를 다시 시작합니다.</li>
+<li><code>docker restart [컨테이너 ID]</code> : 컨테이너를 재시작합니다.</li>
+<li><code>docker rm [컨테이너 ID]</code> : 특정 컨테이너를 삭제합니다.</li>
+<li><code>docker exec -it [컨테이너 이름] /bin/bash</code> : 실행 중인 컨테이너에 접속합니다.</li>
+</ul>
+<h2 id="네트워크-관련-명령어">네트워크 관련 명령어</h2>
+<ul>
+<li><code>docker network ls</code> : 모든 네트워크를 나열합니다.</li>
+<li><code>docker network create [네트워크 이름]</code> : 새로운 네트워크를 생성합니다.</li>
+<li><code>docker network connect [네트워크 이름] [컨테이너 이름]</code> : 컨테이너를 네트워크에 연결합니다.</li>
+<li><code>docker network disconnect [네트워크 이름] [컨테이너 이름]</code> : 컨테이너를 네트워크에서 분리합니다.</li>
+</ul>
+<h2 id="볼륨-관련-명령어">볼륨 관련 명령어</h2>
+<ul>
+<li><code>docker volume ls</code> : 모든 볼륨을 나열합니다.</li>
+<li><code>docker volume create [볼륨 이름]</code> : 새로운 볼륨을 생성합니다.</li>
+<li><code>docker volume rm [볼륨 이름]</code> : 특정 볼륨을 삭제합니다.</li>
+</ul>
+<h2 id="로그-및-상태-확인-명령어">로그 및 상태 확인 명령어</h2>
+<ul>
+<li><code>docker logs [컨테이너 이름]</code> : 컨테이너의 로그를 출력합니다.</li>
+<li><code>docker top [컨테이너 이름]</code> : 컨테이너 내부의 프로세스를 나열합니다.</li>
+<li><code>docker stats</code> : 모든 실행 중인 컨테이너의 실시간 리소스 사용량을 표시합니다.</li>
+</ul>
+<h2 id="도커-컴포즈-관련-명령어">도커 컴포즈 관련 명령어</h2>
+<ul>
+<li><code>docker-compose up</code> : 정의된 모든 서비스(컨테이너)를 시작합니다.</li>
+<li><code>docker-compose down</code> : 정의된 모든 서비스를 중지하고 네트워크를 삭제합니다.</li>
+<li><code>docker-compose ps</code> : 컴포즈로 실행 중인 서비스(컨테이너)를 나열합니다.</li>
+</ul>
+<h1 id="dockerfile-작성법">Dockerfile 작성법</h1>
+<h2 id="dockerfile이란">Dockerfile이란?</h2>
+<p>Dockerfile은 도커 이미지를 생성하기 위한 명령어들의 집합을 포함한 텍스트 파일입니다. Dockerfile은 특정 이미지의 빌드 과정을 자동화하고 일관된 환경을 제공하기 위해 사용됩니다.</p>
+<h2 id="dockerfile-작성-방법">Dockerfile 작성 방법</h2>
+<ul>
+<li><code>FROM</code> : 베이스 이미지를 설정하는 명령어로, Dockerfile의 첫 번째 명령어로 사용됩니다. 예: <code>FROM ubuntu:latest</code></li>
+<li><code>LABEL</code> : 이미지에 메타데이터(작성자 정보 등)를 추가합니다.</li>
+<li><code>WORKDIR</code> : 작업 디렉토리를 설정하며, 이후 명령어들은 설정된 디렉토리에서 실행됩니다.</li>
+<li><code>COPY</code> : 파일이나 디렉토리를 호스트에서 컨테이너로 복사합니다. 예: <code>COPY . /app</code></li>
+<li><code>RUN</code> : 컨테이너 빌드 중에 실행할 명령어를 지정합니다. 패키지 설치 등에 사용됩니다. 예: <code>RUN apt-get update &amp;&amp; apt-get install -y python3</code></li>
+<li><code>EXPOSE</code> : 컨테이너가 사용할 포트를 명시합니다.</li>
+<li><code>CMD</code> : 컨테이너가 시작될 때 실행할 명령어를 지정합니다. 이 명령어는 Dockerfile에서 한 번만 사용되며, 일반적으로 컨테이너의 기본 프로세스를 지정합니다.</li>
+<li><code>ENTRYPOINT</code> : <code>CMD</code>와 유사하게 컨테이너 실행 시 실행할 명령어를 지정하지만, 항상 실행됩니다. <code>CMD</code>와 함께 사용될 수 있습니다.</li>
+</ul>
+<h2 id="dockerfile-예제">Dockerfile 예제</h2>
+<p>아래는 간단한 Python 애플리케이션을 위한 Dockerfile의 예제입니다.</p>
+<pre><code class="language-dockerfile"><span class="hljs-keyword">FROM</span> python:<span class="hljs-number">3.9</span>
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> requirements.txt ./</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> pip install --no-cache-dir -r requirements.txt</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> . .</span>
+<span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">5000</span>
+<span class="hljs-keyword">CMD</span><span class="language-bash"> [<span class="hljs-string">&quot;python&quot;</span>, <span class="hljs-string">&quot;app.py&quot;</span>]</span>
+</code></pre>
+<p>--</p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            <script async type="text/javascript">
+/* From extension marp-team.marp-vscode */
+(()=>{var U=Object.defineProperty;var d=($,E)=>U($,"name",{value:E,configurable:!0});(()=>{var $={676:(w,b,g)=>{w.exports=g(185)},185:(w,b)=>{"use strict";var g;g={value:!0};const x={h1:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"1"},style:"display: block; font-size: 2em; margin-block-start: 0.67em; margin-block-end: 0.67em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h2:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"2"},style:"display: block; font-size: 1.5em; margin-block-start: 0.83em; margin-block-end: 0.83em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h3:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"3"},style:"display: block; font-size: 1.17em; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h4:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"4"},style:"display: block; margin-block-start: 1.33em; margin-block-end: 1.33em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h5:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"5"},style:"display: block; font-size: 0.83em; margin-block-start: 1.67em; margin-block-end: 1.67em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h6:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"6"},style:"display: block; font-size: 0.67em; margin-block-start: 2.33em; margin-block-end: 2.33em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},span:{proto:()=>HTMLSpanElement},pre:{proto:()=>HTMLElement,style:"display: block; font-family: monospace; white-space: pre; margin: 1em 0; --marp-auto-scaling-white-space: pre;"}},k="data-marp-auto-scaling-wrapper",u="data-marp-auto-scaling-svg",c="data-marp-auto-scaling-container",T=class T extends HTMLElement{constructor(){super(),this.svgPreserveAspectRatio="xMinYMid meet";const s=d(i=>([n])=>{const{width:e,height:t}=n.contentRect;this[i]={width:e,height:t},this.updateSVGRect()},"t");this.attachShadow({mode:"open"}),this.containerObserver=new ResizeObserver(s("containerSize")),this.wrapperObserver=new ResizeObserver((...i)=>{s("wrapperSize")(...i),this.flushSvgDisplay()})}static get observedAttributes(){return["data-downscale-only"]}connectedCallback(){var s,i,n,e,t;this.shadowRoot.innerHTML=`
+<style>
+  svg[${u}] { display: block; width: 100%; height: auto; vertical-align: top; }
+  span[${c}] { display: table; white-space: var(--marp-auto-scaling-white-space, nowrap); width: max-content; }
+</style>
+<div ${k}>
+  <svg part="svg" ${u}>
+    <foreignObject><span ${c}><slot></slot></span></foreignObject>
+  </svg>
+</div>
+    `.split(/\n\s*/).join(""),this.wrapper=(s=this.shadowRoot.querySelector(`div[${k}]`))!==null&&s!==void 0?s:void 0;const o=this.svg;this.svg=(n=(i=this.wrapper)===null||i===void 0?void 0:i.querySelector(`svg[${u}]`))!==null&&n!==void 0?n:void 0,this.svg!==o&&(this.svgComputedStyle=this.svg?window.getComputedStyle(this.svg):void 0),this.container=(t=(e=this.svg)===null||e===void 0?void 0:e.querySelector(`span[${c}]`))!==null&&t!==void 0?t:void 0,this.observe()}disconnectedCallback(){this.svg=void 0,this.svgComputedStyle=void 0,this.wrapper=void 0,this.container=void 0,this.observe()}attributeChangedCallback(){this.observe()}flushSvgDisplay(){const{svg:s}=this;s&&(s.style.display="inline",requestAnimationFrame(()=>{s.style.display=""}))}observe(){this.containerObserver.disconnect(),this.wrapperObserver.disconnect(),this.wrapper&&this.wrapperObserver.observe(this.wrapper),this.container&&this.containerObserver.observe(this.container),this.svgComputedStyle&&this.observeSVGStyle(this.svgComputedStyle)}observeSVGStyle(s){const i=d(()=>{const n=(()=>{const e=s.getPropertyValue("--preserve-aspect-ratio");return e?e.trim():`x${(({textAlign:t,direction:o})=>{if(t.endsWith("left"))return"Min";if(t.endsWith("right"))return"Max";if(t==="start"||t==="end"){let a=o==="rtl";return t==="end"&&(a=!a),a?"Max":"Min"}return"Mid"})(s)}YMid meet`})();n!==this.svgPreserveAspectRatio&&(this.svgPreserveAspectRatio=n,this.updateSVGRect()),s===this.svgComputedStyle&&requestAnimationFrame(i)},"e");i()}updateSVGRect(){var s,i,n,e,t,o,a;let p=Math.ceil((i=(s=this.containerSize)===null||s===void 0?void 0:s.width)!==null&&i!==void 0?i:0);const h=Math.ceil((e=(n=this.containerSize)===null||n===void 0?void 0:n.height)!==null&&e!==void 0?e:0);this.dataset.downscaleOnly!==void 0&&(p=Math.max(p,(o=(t=this.wrapperSize)===null||t===void 0?void 0:t.width)!==null&&o!==void 0?o:0));const f=(a=this.svg)===null||a===void 0?void 0:a.querySelector(":scope > foreignObject");if(f?.setAttribute("width",`${p}`),f?.setAttribute("height",`${h}`),this.svg&&(this.svg.setAttribute("viewBox",`0 0 ${p} ${h}`),this.svg.setAttribute("preserveAspectRatio",this.svgPreserveAspectRatio),this.svg.style.height=p<=0||h<=0?"0":""),this.container){const _=this.svgPreserveAspectRatio.toLowerCase();this.container.style.marginLeft=_.startsWith("xmid")||_.startsWith("xmax")?"auto":"0",this.container.style.marginRight=_.startsWith("xmi")?"auto":"0"}}};d(T,"s");let r=T;const m=d((l,{attrs:s={},style:i})=>class extends l{constructor(...n){super(...n);for(const[e,t]of Object.entries(s))this.hasAttribute(e)||this.setAttribute(e,t);this.attachShadow({mode:"open"})}static get observedAttributes(){return["data-auto-scaling"]}connectedCallback(){this._update()}attributeChangedCallback(){this._update()}_update(){const n=i?`<style>:host { ${i} }</style>`:"";let e="<slot></slot>";const{autoScaling:t}=this.dataset;t!==void 0&&(e=`<marp-auto-scaling exportparts="svg:auto-scaling" ${t==="downscale-only"?"data-downscale-only":""}>${e}</marp-auto-scaling>`),this.shadowRoot.innerHTML=n+e}},"o");let v;const j=Symbol();let C;const z="marpitSVGPolyfill:setZoomFactor,",A=Symbol(),D=Symbol(),W=d(()=>{const l=navigator.vendor==="Apple Computer, Inc.",s=l?[B]:[],i={then:n=>(l?(async()=>{if(C===void 0){const e=document.createElement("canvas");e.width=10,e.height=10;const t=e.getContext("2d"),o=new Image(10,10),a=new Promise(p=>{o.addEventListener("load",()=>p())});o.crossOrigin="anonymous",o.src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%201%201%22%3E%3CforeignObject%20width%3D%221%22%20height%3D%221%22%20requiredExtensions%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxhtml%22%3E%3Cdiv%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxhtml%22%20style%3D%22width%3A%201px%3B%20height%3A%201px%3B%20background%3A%20red%3B%20position%3A%20relative%22%3E%3C%2Fdiv%3E%3C%2FforeignObject%3E%3C%2Fsvg%3E",await a,t.drawImage(o,0,0),C=t.getImageData(5,5,1,1).data[3]<128}return C})().then(e=>{n?.(e?[B]:[])}):n?.([]),i)};return Object.assign(s,i)},"h");let H,O;function B(l){const s=typeof l=="object"&&l.target||document,i=typeof l=="object"?l.zoom:l;window[D]||(Object.defineProperty(window,D,{configurable:!0,value:!0}),document.body.style.zoom=1.0001,document.body.offsetHeight,document.body.style.zoom=1,window.addEventListener("message",({data:e,origin:t})=>{if(t===window.origin)try{if(e&&typeof e=="string"&&e.startsWith(z)){const[,o]=e.split(","),a=Number.parseFloat(o);Number.isNaN(a)||(O=a)}}catch(o){console.error(o)}}));let n=!1;Array.from(s.querySelectorAll("svg[data-marpit-svg]"),e=>{var t,o,a,p;e.style.transform||(e.style.transform="translateZ(0)");const h=i||O||e.currentScale||1;H!==h&&(H=h,n=h);const f=e.getBoundingClientRect(),{length:_}=e.children;for(let F=0;F<_;F+=1){const S=e.children[F];if(S.getScreenCTM){const y=S.getScreenCTM();if(y){const I=(o=(t=S.x)===null||t===void 0?void 0:t.baseVal.value)!==null&&o!==void 0?o:0,Z=(p=(a=S.y)===null||a===void 0?void 0:a.baseVal.value)!==null&&p!==void 0?p:0,Y=S.children.length;for(let R=0;R<Y;R+=1){const N=S.children[R];if(N.tagName==="SECTION"){const{style:q}=N;q.transformOrigin||(q.transformOrigin=`${-I}px ${-Z}px`),q.transform=`scale(${h}) matrix(${y.a}, ${y.b}, ${y.c}, ${y.d}, ${y.e-f.left}, ${y.f-f.top}) translateZ(0.0001px)`;break}}}}}}),n!==!1&&Array.from(s.querySelectorAll("iframe"),({contentWindow:e})=>{e?.postMessage(`${z}${n}`,window.origin==="null"?"*":window.origin)})}d(B,"u");function P({once:l=!1,target:s=document}={}){const i=function(n=document){if(n[A])return n[A];let e=!0;const t=d(()=>{e=!1,delete n[A]},"i");Object.defineProperty(n,A,{configurable:!0,value:t});let o=[],a=!1;(async()=>{try{o=await W()}finally{a=!0}})();const p=d(()=>{for(const h of o)h({target:n});a&&o.length===0||e&&window.requestAnimationFrame(p)},"o");return p(),t}(s);return l?(i(),()=>{}):i}d(P,"v"),H=1,O=void 0;const G=P,M=Symbol(),L=d((l=document)=>{if(typeof window>"u")throw new Error("Marp Core's browser script is valid only in browser context.");if(((e=document)=>{const t=window[j];t||customElements.define("marp-auto-scaling",r);for(const o of Object.keys(x)){const a=`marp-${o}`,p=x[o].proto();v!=null||(v=!!document.createElement("div",{is:"marp-auto-scaling"}).outerHTML.startsWith("<div is")),v&&p!==HTMLElement?t||customElements.define(a,m(p,{style:x[o].style}),{extends:o}):(t||customElements.define(a,m(HTMLElement,x[o])),e.querySelectorAll(`${o}[is="${a}"]`).forEach(h=>{h.outerHTML=h.outerHTML.replace(new RegExp(`^<${o}`,"i"),`<${a}`).replace(new RegExp(`</${o}>$`,"i"),`</${a}>`)}))}window[j]=!0})(l),l[M])return l[M];const s=P({target:l}),i=d(()=>{s(),delete l[M]},"n"),n=Object.assign(i,{cleanup:i,update:()=>L(l)});return Object.defineProperty(l,M,{configurable:!0,value:n}),n},"y");b.browser=L,g=L,g=G}},E={};function V(w){var b=E[w];if(b!==void 0)return b.exports;var g=E[w]={exports:{}};return $[w](g,g.exports,V),g.exports}d(V,"__webpack_require__");var J={};(()=>{"use strict";var w=V(676);function b(){let u,c;const r=d(()=>{const m=document.getElementById("__marp-vscode"),v=!!m;u!==v?(document.body.classList.toggle("marp-vscode",v),v?c=(0,w.browser)():(c?.cleanup(),c=void 0),u=v):v&&c?.update(),u?(m&&g(m),x()):k()},"updateCallback");window.addEventListener("load",()=>window.setTimeout(r,100)),window.addEventListener("vscode.markdown.updateContent",r),r()}d(b,"preview");const g=d(u=>{u.querySelectorAll("[is]").forEach(c=>{if(c.nodeName.includes("-")||document.createElement(c.nodeName).constructor!==c.constructor)return;const{outerHTML:m}=c;c.outerHTML=m,console.debug("[marp-vscode] Custom element has been upgraded forcibly:",m.slice(0,m.indexOf(">")+1||void 0))})},"forceUpgradeCustomElements"),x=d(()=>{const u=document.querySelectorAll("style:not(#__marp-vscode-style,#_defaultStyles,[data-marp-vscode-body])"),c=document.querySelectorAll('link[rel="stylesheet"][href]:not([href*="marp-vscode"])');u.forEach(r=>{r.closest("#__marp-vscode")||(r.dataset.marpVscodeBody=r.textContent??"",r.textContent="")}),c.forEach(r=>{if(r.closest("#__marp-vscode"))return;const{href:m}=r;r.dataset.marpVscodeHref=m,r.removeAttribute("href")})},"removeStyles"),k=d(()=>{const u=document.querySelectorAll("style[data-marp-vscode-body]"),c=document.querySelectorAll("link[data-marp-vscode-href]");u.forEach(r=>{r.textContent=r.dataset.marpVscodeBody||"",delete r.dataset.marpVscodeBody}),c.forEach(r=>{r.href=r.dataset.marpVscodeHref||"",delete r.dataset.marpVscodeHref})},"restoreStyles");b()})()})();})();
+
+</script>
+
+        </body>
+        </html>
